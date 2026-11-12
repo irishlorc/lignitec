@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { PageHero, CTA } from '@/components/CTA';
+import { CTA } from '@/components/CTA';
+import { CineHero } from '@/components/CineHero';
 import { IconTile } from '@/components/Icon';
 import { company, milestones, principles } from '@/content/site';
 
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default function About() {
   return (
     <>
-      <PageHero kicker="About" title="Rethinking the materials we build with." lede="A Delft-based company developing bio-based alternatives to conventional panel materials." />
+      <CineHero scene="about" kicker="About" title="Rethinking the materials we build with." lede="A Delft-based company developing bio-based alternatives to conventional panel materials." />
 
       <section className="section bg-white">
         <div className="wrap">

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { PageHero, CTA } from '@/components/CTA';
+import { CTA } from '@/components/CTA';
+import { CineHero } from '@/components/CineHero';
 import { Showcase } from '@/components/Showcase';
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ const finder = [
 export default function Applications() {
   return (
     <>
-      <PageHero kicker="Applications" title="New materials for the things we build." lede="Bio-based panels developed around practical application requirements, from cabinetry to moisture-exposed environments." />
+      <CineHero scene="applications" kicker="Applications" title="New materials for the things we build." lede="Bio-based panels developed around practical application requirements, from cabinetry to moisture-exposed environments." />
       <Showcase />
       <section className="section bg-beige" aria-labelledby="finder-title">
         <div className="wrap flex flex-col gap-8">

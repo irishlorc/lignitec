@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { PageHero } from '@/components/CTA';
+import { CineHero } from '@/components/CineHero';
 import { ContactForm } from '@/components/ContactForm';
 import { IconTile } from '@/components/Icon';
 import { company } from '@/content/site';
@@ -19,7 +19,7 @@ export default function Contact() {
   ];
   return (
     <>
-      <PageHero kicker="Contact" title="Let's build something better." lede="Have a product, project or material requirement in mind? Tell us what you're working on." />
+      <CineHero scene="contact" kicker="Contact" title="Let's build something better." lede="Have a product, project or material requirement in mind? Tell us what you're working on." />
       <section className="section bg-white">
         <div className="wrap grid gap-12 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
           <div className="flex flex-col gap-4">

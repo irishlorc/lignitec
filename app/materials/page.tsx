@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { PageHero, CTA } from '@/components/CTA';
+import { CTA } from '@/components/CTA';
+import { CineHero } from '@/components/CineHero';
 import { ProductExplorer } from '@/components/ProductExplorer';
 import { IconTile } from '@/components/Icon';
 import { products, published } from '@/content/site';
@@ -19,7 +20,7 @@ const steps = [
 export default function Materials() {
   return (
     <>
-      <PageHero kicker="Materials" title="Engineered for performance. Designed for circularity." lede="Three bio-based panel materials for different densities, finishing requirements and environments." />
+      <CineHero scene="materials" kicker="Materials" title="Engineered for performance. Designed for circularity." lede="Three bio-based panel materials for different densities, finishing requirements and environments." />
       <ProductExplorer heading={false} />
 
       <section className="section bg-white" aria-labelledby="compare-title">

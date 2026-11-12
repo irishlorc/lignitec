@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { PageHero, CTA } from '@/components/CTA';
+import { CTA } from '@/components/CTA';
+import { CineHero } from '@/components/CineHero';
 import { DensityScale, FibreNetwork, LigninDiagram } from '@/components/diagrams';
 import { LayerPoster } from '@/components/LayerPoster';
 import { published } from '@/content/site';
@@ -27,7 +28,7 @@ function Block({ n, title, children, figure, flip = false }: { n: string; title:
 export default function Science() {
   return (
     <>
-      <PageHero kicker="The science" title="A panel is fibre plus whatever holds it together." lede="Lignitec changes the second part. Here is the reasoning, and exactly what has been published so far." />
+      <CineHero scene="science" kicker="The science" title="A panel is fibre plus whatever holds it together." lede="Lignitec changes the second part. Here is the reasoning, and exactly what has been published so far." />
 
       <Block n="1" title="Lignin already binds wood" figure={<><LigninDiagram /><figcaption className="caption">Schematic of wood structure. General wood science, not a Lignitec measurement.</figcaption></>}>
         <p>In a tree, cellulose fibres are held in a matrix of lignin, the natural polymer that gives wood its rigidity.</p>

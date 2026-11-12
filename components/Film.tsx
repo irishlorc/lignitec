@@ -1,7 +1,7 @@
 'use client';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { journey } from '@/content/site';
@@ -29,22 +29,24 @@ const STILL: FibreState = { assemble: 1, split: 0.62, bind: 0, density: 1, layer
 
 export function Film() {
   const root = useRef<HTMLElement>(null);
+  const pin = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
   const state = useRef<FibreState>({ ...START });
   const reduced = useReducedMotion();
   const [active, setActive] = useState(true);
   const [ready, setReady] = useState(false);
 
-  useEffect(() => {
+  // Layout effect: GSAP must unwrap its pin spacer before React removes the section on navigation.
+  useLayoutEffect(() => {
     if (reduced === true) Object.assign(state.current, STILL);
-    if (reduced !== false || !root.current) return;
+    if (reduced !== false || !root.current || !pin.current) return;
     gsap.registerPlugin(ScrollTrigger);
     const s = state.current;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: 'power2.inOut' },
         scrollTrigger: {
-          trigger: root.current, start: 'top top', end: '+=520%', pin: true, scrub: 0.6,
+          trigger: pin.current, start: 'top top', end: '+=520%', pin: pin.current, scrub: 0.6,
           onUpdate: (st) => { if (bar.current) bar.current.style.transform = `scaleX(${st.progress})`; },
           onToggle: (st) => setActive(st.isActive),
         },
@@ -79,7 +81,9 @@ export function Film() {
 
   return (
     <>
-      <section ref={root} aria-label="Introduction" className="relative h-[100svh] min-h-[640px] overflow-hidden bg-[#131813] text-white">
+      {/* The section belongs to React; only the inner div is pinned, so the pin spacer never sits between React and its node. */}
+      <section ref={root} aria-label="Introduction" className="bg-[#131813] text-white">
+      <div ref={pin} className="relative h-[100svh] min-h-[640px] overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_42%,#2B3828_0%,#131813_70%)]" aria-hidden="true" />
         <p className="sr-only">Visualisation: thousands of loose fibres drift, gather and press into a three-layer panel, which separates into its inputs, reassembles, then breaks apart and re-forms.</p>
         <div className="absolute inset-0">
@@ -119,6 +123,7 @@ export function Film() {
 
         <p className="absolute right-5 top-28 max-w-[22ch] text-right text-[11px] leading-snug text-white/50 sm:right-8 lg:right-12">Conceptual visualisation. Not a product cross-section or a manufacturing process.</p>
         {!still && <div className="absolute inset-x-0 bottom-0 h-1 bg-white/10" aria-hidden="true"><div ref={bar} className="h-full origin-left scale-x-0 bg-green" /></div>}
+      </div>
       </section>
 
       {/* Reduced motion: the same story as a static list */}

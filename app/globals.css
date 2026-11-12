@@ -1,0 +1,35 @@
+@import '@fontsource-variable/dm-sans';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body { @apply bg-white font-sans text-charcoal antialiased; font-size: 17px; line-height: 1.6; }
+  h1, h2, h3 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+  :focus-visible { outline: 3px solid #1F2420; outline-offset: 3px; border-radius: 4px; }
+  ::selection { background: #B9DB92; }
+}
+
+@layer components {
+  .wrap { @apply mx-auto w-full max-w-site px-5 sm:px-8 lg:px-12; }
+  .display { @apply font-medium leading-[0.98] tracking-[-0.035em]; font-size: clamp(2.6rem, 8.2vw, 7rem); }
+  .h2 { @apply font-medium leading-[1.04] tracking-[-0.03em]; font-size: clamp(1.9rem, 4.6vw, 3.6rem); }
+  .h3 { @apply text-xl font-semibold leading-snug tracking-[-0.01em]; }
+  .lede { @apply max-w-[40ch] text-grey-ink; font-size: clamp(1.1rem, 1.7vw, 1.4rem); line-height: 1.45; }
+  .kicker { @apply text-sm font-semibold text-green-ink; }
+  .btn { @apply inline-flex min-h-[48px] items-center justify-center rounded-full border border-charcoal px-6 text-[0.97rem] font-semibold transition-colors duration-150 hover:bg-charcoal hover:text-white; }
+  .btn-primary { @apply border-green bg-green text-charcoal hover:border-charcoal; }
+  .btn-dark { @apply bg-charcoal text-white hover:bg-white hover:text-charcoal; }
+  .chip { @apply inline-flex items-center rounded-full bg-beige-tan/70 px-2.5 py-0.5 text-xs font-semibold text-charcoal; }
+  .card { @apply rounded-3xl bg-beige p-6; }
+  .caption { @apply text-xs leading-relaxed text-grey-ink; }
+  .section { @apply py-16 sm:py-24 lg:py-32; }
+  .line-mask { @apply block overflow-hidden pb-[0.08em]; }
+  .line-mask > span { @apply block animate-rise; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}

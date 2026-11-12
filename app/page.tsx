@@ -1,6 +1,6 @@
 import Link from 'next/link';
-import { Hero } from '@/components/Hero';
-import { Journey } from '@/components/Journey';
+import { Film } from '@/components/Film';
+import { ScrubText } from '@/components/ScrubText';
 import { ProductExplorer } from '@/components/ProductExplorer';
 import { Showcase } from '@/components/Showcase';
 import { CTA } from '@/components/CTA';
@@ -17,19 +17,16 @@ const why = [
 export default function Home() {
   return (
     <>
-      <Hero />
+      <Film />
 
-      <section className="section bg-white">
-        <div className="wrap grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
-          <h2 className="h2">Most boards can&apos;t be taken apart again. <span className="text-grey">Synthetic adhesives bind fibre and resin for good, which limits recycling.</span></h2>
-          <div className="flex flex-col justify-end gap-5">
-            <p className="text-lg text-grey-ink">Lignitec replaces fossil-based adhesive with a lignin-based binder, and develops its panels with their next use in mind.</p>
-            <Link href="/science" className="btn self-start">See the science</Link>
-          </div>
+      <section className="bg-white py-24 sm:py-36 lg:py-48">
+        <div className="wrap flex flex-col gap-10">
+          <ScrubText className="max-w-[20ch] font-medium leading-[1.04] tracking-[-0.035em] [font-size:clamp(2.2rem,6.6vw,6rem)]"
+            parts={[{ text: "Most boards can't be taken apart again." }, { text: 'Synthetic adhesives bind fibre and resin for good.', tone: 'grey' }, { text: 'We bind with lignin instead.', tone: 'green' }]} />
+          <Link href="/science" className="btn self-start">See the science</Link>
         </div>
       </section>
 
-      <Journey />
       <ProductExplorer />
       <Showcase compact />
 

@@ -3,19 +3,23 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { products, suitability, suitabilityLabel, type ProductId } from '@/content/site';
+import gsap from 'gsap';
 import { Icon } from './Icon';
+import { useReducedMotion } from '@/lib/useReducedMotion';
+import type { FibreState } from './three/FibreStage';
 
-const PanelCanvas = dynamic(() => import('./three/PanelCanvas'), { ssr: false });
+const FibreStage = dynamic(() => import('./three/FibreStage'), { ssr: false });
 
 const SCALE_MAX = 1600;
 
 export function ProductExplorer({ initial = 'md', heading = true }: { initial?: ProductId; heading?: boolean }) {
   const [id, setId] = useState<ProductId>(initial);
   const [show3d, setShow3d] = useState(false);
-  const rotation = useRef(0);
+  const [visible, setVisible] = useState(false);
+  const reduced = useReducedMotion();
+  const fibre = useRef<FibreState>({ assemble: 1, split: 0, bind: 0, density: 750 / 1400, layered: 0, angle: -0.55, elev: 0.52, dist: 6.6 });
   const stage = useRef<HTMLDivElement>(null);
   const drag = useRef<{ x: number; r: number } | null>(null);
-  const [, force] = useState(0);
   const p = products.find((x) => x.id === id)!;
 
   // Deep link: /materials#hd selects that material.
@@ -33,11 +37,20 @@ export function ProductExplorer({ initial = 'md', heading = true }: { initial?: 
   useEffect(() => {
     if (!stage.current) return;
     const io = new IntersectionObserver((e) => e[0].isIntersecting && (setShow3d(true), io.disconnect()), { rootMargin: '300px' });
-    io.observe(stage.current);
-    return () => io.disconnect();
+    const vis = new IntersectionObserver((e) => setVisible(e[0].isIntersecting));
+    io.observe(stage.current); vis.observe(stage.current);
+    return () => { io.disconnect(); vis.disconnect(); };
   }, []);
 
-  const turn = (d: number) => { rotation.current += d; force((n) => n + 1); };
+  // Fibres pack in or thin out to the published density of the selected material.
+  useEffect(() => {
+    const d = products.find((x) => x.id === id)!.density / 1400;
+    if (reduced) { fibre.current.density = d; return; }
+    const t = gsap.to(fibre.current, { density: d, duration: 1.1, ease: 'power2.inOut' });
+    return () => { t.kill(); };
+  }, [id, reduced]);
+
+  const turn = (d: number) => { gsap.to(fibre.current, { angle: fibre.current.angle + d, duration: 0.5, ease: 'power2.out', overwrite: 'auto' }); };
 
   const onKeyTabs = (e: React.KeyboardEvent) => {
     const i = products.findIndex((x) => x.id === id);
@@ -72,19 +85,20 @@ export function ProductExplorer({ initial = 'md', heading = true }: { initial?: 
           <div className="flex flex-col gap-3">
             <div ref={stage} role="img" tabIndex={0}
               aria-label={`Illustrative 3D render of a ${p.name} panel, fibre density drawn in proportion to ${p.density} kilograms per cubic metre. Use left and right arrow keys to rotate.`}
-              className="relative aspect-[4/3] cursor-grab touch-pan-y overflow-hidden rounded-panel bg-white active:cursor-grabbing sm:aspect-[16/11]"
+              className="relative aspect-[4/3] cursor-grab touch-pan-y overflow-hidden rounded-panel bg-[#131813] text-white active:cursor-grabbing sm:aspect-[16/11]"
               onKeyDown={(e) => { if (e.key === 'ArrowLeft') turn(-0.35); if (e.key === 'ArrowRight') turn(0.35); }}
-              onPointerDown={(e) => { drag.current = { x: e.clientX, r: rotation.current }; (e.target as Element).setPointerCapture?.(e.pointerId); }}
-              onPointerMove={(e) => { if (drag.current) { rotation.current = drag.current.r + (e.clientX - drag.current.x) * 0.008; force((n) => n + 1); } }}
+              onPointerDown={(e) => { drag.current = { x: e.clientX, r: fibre.current.angle }; (e.target as Element).setPointerCapture?.(e.pointerId); }}
+              onPointerMove={(e) => { if (drag.current) fibre.current.angle = drag.current.r - (e.clientX - drag.current.x) * 0.008; }}
               onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}>
-              {show3d && <PanelCanvas mode="explorer" density={p.density} rotation={rotation} key={p.density} />}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_50%,#2B3828_0%,#131813_72%)]" aria-hidden="true" />
+              <div className="absolute inset-0">{show3d && reduced !== null && <FibreStage mode="explorer" state={fibre} animate={!reduced} active={visible} />}</div>
               <div className="pointer-events-none absolute left-5 top-5 flex flex-col">
                 <span className="text-4xl font-medium tabular-nums tracking-tight sm:text-5xl">{p.density.toLocaleString('en-GB')}</span>
-                <span className="text-sm text-grey-ink">kg/m³, published density</span>
+                <span className="text-sm text-white/70">kg/m³, published density</span>
               </div>
               <div className="absolute bottom-4 right-4 flex gap-2">
-                <button type="button" onClick={() => turn(-0.5)} aria-label="Rotate left" className="flex h-11 w-11 items-center justify-center rounded-full bg-beige hover:bg-beige-deep"><Icon name="rotate" className="h-5 w-5" /></button>
-                <button type="button" onClick={() => turn(0.5)} aria-label="Rotate right" className="flex h-11 w-11 items-center justify-center rounded-full bg-beige hover:bg-beige-deep"><Icon name="rotate" className="h-5 w-5 -scale-x-100" /></button>
+                <button type="button" onClick={() => turn(-0.5)} aria-label="Rotate left" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/30"><Icon name="rotate" className="h-5 w-5" /></button>
+                <button type="button" onClick={() => turn(0.5)} aria-label="Rotate right" className="flex h-11 w-11 items-center justify-center rounded-full bg-white/15 text-white hover:bg-white/30"><Icon name="rotate" className="h-5 w-5 -scale-x-100" /></button>
               </div>
             </div>
             {/* density on a true linear scale */}
@@ -94,7 +108,7 @@ export function ProductExplorer({ initial = 'md', heading = true }: { initial?: 
               </div>
               <div className="mt-2 flex justify-between text-xs tabular-nums text-grey-ink"><span>0</span><span>400</span><span>800</span><span>1,200</span><span>1,600 kg/m³</span></div>
             </div>
-            <p className="caption">Illustrative render. Fibre count follows published density. Colour, surface and thickness are not representative of the product.</p>
+            <p className="caption">Illustrative render. The number of fibres drawn follows published density. Colour, surface and thickness are not representative of the product.</p>
           </div>
 
           <div className="flex flex-col gap-6">

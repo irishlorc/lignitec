@@ -24,13 +24,13 @@ export function Header() {
   }, [open]);
 
   return (
-    <header className={`fixed inset-x-0 top-0 z-50 transition-colors duration-300 ${scrolled || open ? 'bg-white/95 backdrop-blur' : 'bg-transparent'}`}>
+    <header className="fixed inset-x-0 top-0 z-50">
       {/* Remove this strip once Lignitec approves the site */}
       <p className="bg-charcoal py-1 text-center text-[11px] font-medium text-white">Redesign concept. Not Lignitec&apos;s official website.</p>
-      <div className="wrap flex h-16 items-center gap-8 lg:h-20">
+      <div className={`mx-3 mt-2 flex h-14 max-w-site items-center gap-8 rounded-full bg-white/90 pl-5 pr-2 shadow-[0_2px_20px_rgba(0,0,0,.08)] backdrop-blur-md transition-shadow sm:mx-6 lg:mx-auto lg:h-16 lg:w-[calc(100%-6rem)] lg:pl-7 ${scrolled ? 'shadow-[0_4px_28px_rgba(0,0,0,.14)]' : ''}`}>
         <Link href="/" className="flex-none" aria-label="Lignitec home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="Lignitec" width={900} height={179} className="h-8 w-auto lg:h-9" />
+          <img src="/logo.png" alt="Lignitec" width={900} height={179} className="h-7 w-auto lg:h-8" />
         </Link>
         <nav aria-label="Main" className="ml-auto hidden items-center gap-8 lg:flex">
           {nav.map((n) => (
@@ -42,13 +42,13 @@ export function Header() {
           <Link href="/contact" className="btn btn-primary min-h-[44px] px-5 text-sm">Discuss your application</Link>
         </nav>
         <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="mobile-nav"
-          className="ml-auto inline-flex h-11 items-center rounded-full border border-charcoal/20 bg-white/80 px-4 text-sm font-semibold lg:hidden">
+          className="ml-auto inline-flex h-10 items-center rounded-full bg-charcoal px-5 text-sm font-semibold text-white lg:hidden">
           {open ? 'Close' : 'Menu'}
         </button>
       </div>
       {open && (
-        <nav id="mobile-nav" aria-label="Main" className="h-[calc(100svh-5.5rem)] overflow-y-auto bg-white lg:hidden">
-          <div className="wrap flex flex-col pb-10 pt-4">
+        <nav id="mobile-nav" aria-label="Main" className="mx-3 mt-2 max-h-[calc(100svh-7rem)] overflow-y-auto rounded-3xl bg-white shadow-xl sm:mx-6 lg:hidden">
+          <div className="flex flex-col px-6 pb-6 pt-2">
             {[{ href: '/', label: 'Home' }, ...nav, { href: '/contact', label: 'Contact' }].map((n) => (
               <Link key={n.href} href={n.href} className="border-b border-line py-4 text-3xl font-medium tracking-tight">{n.label}</Link>
             ))}
